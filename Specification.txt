@@ -1,0 +1,7 @@
+- adding tasks to the list,
+- filtering tasks, 
+- removing tasks from the list by clicking 'x',
+- modals to confirm actions,
+- toasts when action confirmed,
+- tasks sortable in the list.
+- saving and deleting form local storage,
