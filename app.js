@@ -23,12 +23,24 @@ const dialogAnimationEffect = 'fade';
 
 
 addEventListeners()
+loadTasksFromLocalStorage();
 
 function addEventListeners() {
   addTaskForm.addEventListener('submit', addTask);
   listOfTasks.addEventListener('click', deleteTask);
   clearTasksBtn.addEventListener('click', clearAllTasks);
   filterInput.addEventListener('input', filterTasks)
+}
+
+function loadTasksFromLocalStorage() {
+  
+  if(localStorage.getItem('tasksArray') !== null) {
+    let tasksArray = JSON.parse(localStorage.getItem('tasksArray'));
+
+    tasksArray.forEach(function(item) {
+      createHtmlElement(item);
+    })
+  } 
 }
 
 
@@ -49,6 +61,14 @@ function addTask(e) {
 
 function createTaskItem(taskName) {
   
+  createHtmlElement(taskName);
+  saveTheTaskInLocalStorage(taskName);
+  taskInput.value = '';
+
+}
+
+function createHtmlElement(taskName) {
+
   const taskItem = document.createElement('li');
   taskItem.className = taskItemClass;
   taskItem.appendChild(document.createTextNode(taskName));
@@ -66,14 +86,18 @@ function createTaskItem(taskName) {
 function deleteTask(e) {
   e.preventDefault();
   const taskItemLi = e.target.parentElement.parentElement;
+  let taskNameToDeleteFromLocalStorage = taskItemLi.childNodes[0].nodeValue;
 
   if(taskItemLi.classList.contains('collection-item')) {
-    
     alertify.confirm(deleteItemConfirmText, function(){ 
         taskItemLi.remove();
+        deleteTaskFromLocalStorage(taskNameToDeleteFromLocalStorage)
         notifyTheUser(taskRemovedNotificationText);
     }).set({transition: dialogAnimationEffect}).setHeader('Confirm');
   }
+
+  
+  
 
 }
 
@@ -84,7 +108,10 @@ function clearAllTasks() {
     alertify.confirm(clearAllTasksConfirmText, function(){
       i=0;
       while(listOfTasks.firstChild) {
-        listOfTasks.removeChild(listOfTasks.firstChild)
+        listOfTasks.removeChild(listOfTasks.firstChild);
+
+        localStorage.setItem('tasksArray', '[]');
+        
       };
       notifyTheUser(clearedAllTasksNotificationText);
   }).set({transition: dialogAnimationEffect}).setHeader('Confirm');
@@ -113,12 +140,33 @@ function notifyTheUser(text = 'Ok', type = 'success') {
   alertify.notify(text, type, 5);
 }
 
-// function getAndSetArrayOfTasks() {
 
-//   if(localStorage.getItem('tasks') === 'indefined') {
-//     tasks = [];
-//   } else {
-//     tasks = JSON.parse(localStorage.getItem('tasks'));
-//   }
+function saveTheTaskInLocalStorage(task) {
 
-// }
+  let tasksArray;
+  if(localStorage.getItem('tasksArray') === null) {
+    tasksArray = [];
+  } else {
+    tasksArray = JSON.parse(localStorage.getItem('tasksArray'));
+  }
+
+  tasksArray.push(task);
+  localStorage.setItem('tasksArray',JSON.stringify(tasksArray));
+}
+
+function deleteTaskFromLocalStorage(taskName) {
+  let tasksArray;
+  if(localStorage.getItem('tasksArray') === null) {
+    tasksArray = [];
+  } else {
+    tasksArray = JSON.parse(localStorage.getItem('tasksArray'));
+  }
+
+  let taskIndexToDelete = tasksArray.indexOf(taskName);
+
+  console.log(taskIndexToDelete)
+  tasksArray.splice(taskIndexToDelete,1)
+
+  localStorage.setItem('tasksArray',JSON.stringify(tasksArray));
+
+}
