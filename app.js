@@ -5,23 +5,20 @@ const listOfTasks = document.querySelector('ul.collection');
 const clearTasksBtn = document.querySelector('.clear-tasks');
 const filterInput = document.querySelector('#filter');
 
-
+//Dictionaries
 const taskItemClass = 'collection-item';
 const deleteAnchorClass = 'secondary-content delete-item';
 const emptyTaskNotificationText = 'Enter the task\'s name.';
 const taskCreatedNotificationText = 'Task has been successfuly created!';
 const deleteItemConfirmText = 'Are you sure?';
 const clearAllTasksConfirmText = 'Delete the whole list?';
-
 const taskRemovedNotificationText = 'Task has been removed.';
 const clearedAllTasksNotificationText = 'Tasks have been removed.';
-
 const listOfTasksEmptyNotificationText = 'List of tasks is already empty.';
-
 const dialogAnimationEffect = 'fade';
 
 
-
+//Start
 addEventListeners()
 loadTasksFromLocalStorage();
 
@@ -33,7 +30,6 @@ function addEventListeners() {
 }
 
 function loadTasksFromLocalStorage() {
-  
   if(localStorage.getItem('tasksArray') !== null) {
     let tasksArray = JSON.parse(localStorage.getItem('tasksArray'));
 
@@ -42,7 +38,6 @@ function loadTasksFromLocalStorage() {
     })
   } 
 }
-
 
 function addTask(e) {
   e.preventDefault();
@@ -95,10 +90,6 @@ function deleteTask(e) {
         notifyTheUser(taskRemovedNotificationText);
     }).set({transition: dialogAnimationEffect}).setHeader('Confirm');
   }
-
-  
-  
-
 }
 
 function clearAllTasks() {
@@ -132,14 +123,7 @@ function filterTasks(e) {
     }
   })
 
-
 }
-
-//notifications
-function notifyTheUser(text = 'Ok', type = 'success') {
-  alertify.notify(text, type, 5);
-}
-
 
 function saveTheTaskInLocalStorage(task) {
 
@@ -164,9 +148,11 @@ function deleteTaskFromLocalStorage(taskName) {
 
   let taskIndexToDelete = tasksArray.indexOf(taskName);
 
-  console.log(taskIndexToDelete)
   tasksArray.splice(taskIndexToDelete,1)
-
   localStorage.setItem('tasksArray',JSON.stringify(tasksArray));
+}
 
+//notifications
+function notifyTheUser(text = 'Ok', type = 'success') {
+  alertify.notify(text, type, 5);
 }
